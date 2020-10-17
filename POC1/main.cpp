@@ -1,5 +1,6 @@
-#define BOOST_TEST_MODULE SPEECHPOC1
-#include <boost/test/included/unit_test.hpp>
+#define UNIT
+#include "lowOverheadUnitTest.hpp"
+
 #include <iostream>
 #include <deque>
 #include <stdint.h> // uint8_t
@@ -39,14 +40,17 @@ void printFDFT()
   }
 }
 
-BOOST_AUTO_TEST_SUITE( ts_speechPOC1)
-
-BOOST_AUTO_TEST_CASE( tc_printFDFT )
+int printTests(void)
 {
   generateTestFDFT();
   printFDFT();
 
-  BOOST_TEST_REQUIRE( true );
+  return 0;
 }
+START_TEST(printTests);
 
-BOOST_AUTO_TEST_SUITE_END()
+int main()
+{
+  std::cout<<"This is still in development, nothing to do yet"<<std::endl;
+  return 0;
+}
