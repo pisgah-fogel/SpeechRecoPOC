@@ -40,6 +40,50 @@ void printFDFT()
   }
 }
 
+int predictA()
+{
+  if (FREQDEFINITION != 2) {
+    std::cout<<"Error: FREQDEFINITION has changed"<<std::endl;
+    return 1;
+  }
+  if (BUFFERSIZE != 5) {
+    std::cout<<"Error: BUFFERSIZE has changed"<<std::endl;
+    return 1;
+  }
+  const uint8_t wa[5][2] = { // Weigth for Sample A
+    {0, 0},
+    {0, 255},
+    {0, 255},
+    {255, 255},
+    {0, 0}
+  };
+  const unsigned int threshold = 3; // = SUM(wa) - Tolerance
+  bool matchA = false;
+
+  generateTestFDFT();
+
+  unsigned int probability = 0;
+  for (size_t i = 0; i<5; i++) { // For every sample (frequency domain)
+    for (size_t z = 0; z < 2; z++) { // For every frequency
+      probability += wa[i][z] & fft_buffer[i][z];
+    }
+  }
+
+  if (probability > threshold) {
+    matchA = true;
+  }
+
+  if (matchA)
+    return 0; // Test passed
+  else {
+    std::cout<<"Bad prediction, prob="<<probability<<", threshold="<<threshold<<std::endl;
+    return 1; // Test failed
+  }
+
+  return -1; // Missing
+}
+START_TEST(predictA);
+
 int printTests(void)
 {
   generateTestFDFT();
