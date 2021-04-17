@@ -66,18 +66,145 @@ print("Sunset: "+sunset+" "+str(sunset_int))
 for item in forecast_array:
     print(str(item["hour"])+"h => "+item["condition"]+" "+str(item["total_cloud"])+"% clouds "+str(item["temperature"])+"° == "+item['precipitation'])
 
-day_avg_temp_morning = 0
-day_avg_temp_morning_cnt = 0
-day_avg_temp_afternoon = 0
-day_avg_temp_afternoon_cnt = 0
-for hour in forecast_array:
-    if hour["hour"] < sunrise_int or hour["hour"] > sunset_int:
-        # It is night time
+# Going through the datas and print the forecast
+# Example: 3 hours of rain this morning, at 9, 11 and 12 o clock, with an average temperature of 7 degrees. ... afternoon, ... 5 hours to watch the stars.
+
+# Morning forecast
+index = 0
+count_rain = 0
+count_sun = 0
+count_temp = 0
+sum_temp = 0
+while index < len(forecast_array) and forecast_array[index]["hour"] >= sunrise_int and forecast_array[index]["hour"] < 13:
+    sum_temp += forecast_array[index]["temperature"]
+    count_temp += 1
+    if forecast_array[index]["precipitation"] == "None":
+        count_sun += 1
     else:
-        # It is daytime
-        if hour["hour"] < 13:
-            day_avg_temp_morning = hour["temperature"]
-            day_avg_temp_morning_cnt += 1
-        else:
-            day_avg_temp_morning = hour["temperature"]
-            day_avg_temp_morning_cnt += 1
+        count_rain += 1
+    index += 1
+if count_temp != 0:
+    avg_temp = sum_temp / count_temp
+    print("This morning, ")
+    if count_rain == 0:
+        print("No rain, ")
+    elif count_sun == 0:
+        print("Rain, ")
+    else:
+        print(str(count_sun)+" hours of sun and "+str(count_rain)+" hours of rain, ")
+    print("With an average temperature of " + str(avg_temp) + "degrees")
+
+# Afternoon
+count_rain = 0
+count_sun = 0
+count_temp = 0
+sum_temp = 0
+while index < len(forecast_array) and forecast_array[index]["hour"] <= sunset_int:
+    sum_temp += forecast_array[index]["temperature"]
+    count_temp += 1
+    if forecast_array[index]["precipitation"] == "None":
+        count_sun += 1
+    else:
+        count_rain += 1
+    index += 1
+if count_temp != 0:
+    avg_temp = sum_temp / count_temp
+    print("This afternoon, ")
+    if count_rain == 0:
+        print("No rain, ")
+    elif count_sun == 0:
+        print("Rain, ")
+    else:
+        print(str(count_sun)+" hours of sun and "+str(count_rain)+" hours of rain, ")
+    print("With an average temperature of " + str(avg_temp) + "degrees")
+
+# Night
+count_temp = 0
+sum_temp = 0
+count_good = 0
+while index < len(forecast_array) and (forecast_array[index]["hour"] > sunset_int or forecast_array[index]["hour"] < sunrise_int):
+    sum_temp += forecast_array[index]["temperature"]
+    count_temp += 1
+    if forecast_array[index]["condition"] == "Good": # or forecast_array[index]["total_cloud"] < 20
+        count_good += 1
+    index += 1
+if count_temp != 0:
+    avg_temp = sum_temp / count_temp
+    print("This night, ")
+    if count_good == 0:
+        print("Nothing to see.")
+    elif count_good == count_temp:
+        print("No cloud, you have to look at the sky.")
+    else:
+        print(str(count_good)+" over "+str(count_temp)+" hours without clouds")
+    print("With an average temperature of " + str(avg_temp) + "degrees")
+
+# Tomorrow Morning
+index = 0
+count_rain = 0
+count_sun = 0
+count_temp = 0
+sum_temp = 0
+while index < len(forecast_array) and forecast_array[index]["hour"] >= sunrise_int and forecast_array[index]["hour"] < 13:
+    sum_temp += forecast_array[index]["temperature"]
+    count_temp += 1
+    if forecast_array[index]["precipitation"] == "None":
+        count_sun += 1
+    else:
+        count_rain += 1
+    index += 1
+if count_temp != 0:
+    avg_temp = sum_temp / count_temp
+    print("Tomorrow morning, ")
+    if count_rain == 0:
+        print("No rain, ")
+    elif count_sun == 0:
+        print("Rain, ")
+    else:
+        print(str(count_sun)+" hours of sun and "+str(count_rain)+" hours of rain, ")
+    print("With an average temperature of " + str(avg_temp) + "degrees")
+
+# Tomorrow Afternoon
+count_rain = 0
+count_sun = 0
+count_temp = 0
+sum_temp = 0
+while index < len(forecast_array) and forecast_array[index]["hour"] < sunset_int:
+    sum_temp += forecast_array[index]["temperature"]
+    count_temp += 1
+    if forecast_array[index]["precipitation"] == "None":
+        count_sun += 1
+    else:
+        count_rain += 1
+    index += 1
+if count_temp != 0:
+    avg_temp = sum_temp / count_temp
+    print("Tomorrow afternoon, ")
+    if count_rain == 0:
+        print("No rain, ")
+    elif count_sun == 0:
+        print("Rain, ")
+    else:
+        print(str(count_sun)+" hours of sun and "+str(count_rain)+" hours of rain, ")
+    print("With an average temperature of " + str(avg_temp) + "degrees")
+
+# Tomorrow Night
+count_temp = 0
+sum_temp = 0
+count_good = 0
+while index < len(forecast_array) and (forecast_array[index]["hour"] > sunset_int or forecast_array[index]["hour"] < sunrise_int):
+    sum_temp += forecast_array[index]["temperature"]
+    count_temp += 1
+    if forecast_array[index]["condition"] == "Good": # or forecast_array[index]["total_cloud"] < 20
+        count_good += 1
+    index += 1
+if count_temp != 0:
+    avg_temp = sum_temp / count_temp
+    print("Tomorrow night, ")
+    if count_good == 0:
+        print("Nothing to see.")
+    elif count_good == count_temp:
+        print("No cloud, you have to look at the sky.")
+    else:
+        print(str(count_good)+" over "+str(count_temp)+" hours without clouds")
+    print("With an average temperature of " + str(avg_temp) + "degrees")
