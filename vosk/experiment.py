@@ -39,6 +39,12 @@ except ModuleNotFoundError:
     print("ERROR: Cannot find 'weather.py'")
     exit(1)
 
+try:
+    import musicplayer
+except ModuleNotFoundError:
+    print("ERROR: Cannot find 'musicplayer.py'")
+    exit(1)
+
 # for speach synthesis
 try:
     import pyttsx3
@@ -153,6 +159,20 @@ try:
                             engine.say("Enable to fetch the weather forecast from internet")
                         engine.runAndWait()
                         skipDatas = False
+                    elif tmp == "play music" or tmp == "play some music":
+                        musicplayer.launch(gui=True)
+                    elif tmp == "next music" or tmp == "music next":
+                        musicplayer.next_track()
+                    elif tmp == "previous music" or tmp == "music previous":
+                        musicplayer.previous_track()
+                    elif tmp == "stop music" or tmp == "music stop":
+                        musicplayer.stop()
+                    elif tmp == "pause music" or tmp == "music pause":
+                        musicplayer.pause()
+                    elif tmp == "medieval music" or tmp == "music medieval":
+                        musicplayer.play_medieval()
+                    elif tmp == "low fi music" or tmp == "music low fi" or tmp == "lo fi music" or tmp == "music lo fi":
+                        musicplayer.play_lofi()
                 else:
                     tmp = rec.PartialResult()
                     tmp = tmp[17:]
