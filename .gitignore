@@ -1,1 +1,4 @@
 **/test
+**/model
+**/__pycache__
+index.html

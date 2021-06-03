@@ -9,13 +9,50 @@
 import argparse
 import os
 import queue
-import sounddevice as sd
-import vosk
+
+try:
+    import sounddevice as sd
+except ModuleNotFoundError:
+    print("ERROR: Your need 'sounddevice' for this script to work.")
+    print("Use: python3 -m pip install sounddevice")
+    print("Install portaudio backend using APT: sudo apt install python3-pyaudio")
+    exit(1)
+except OSError:
+    print("ERROR: Your need 'portaudio' for this script to work.")
+    print("Install portaudio backend using APT: sudo apt install python3-pyaudio")
+    exit(1)
+
+try:
+    import vosk
+except ModuleNotFoundError:
+    print("ERROR: Your need 'vosk' for this script to work.")
+    print("Use: python3 -m pip install vosk")
+    print("Note: You can try to update pip with: python3 -m pip install -U pip")
+    print("If you are using a arm64 architecture you may have to use: pip3 install https://github.com/alphacep/vosk-api/releases/download/0.3.15/vosk-0.3.15-cp37-cp37m-linux_aarch64.whl")
+    exit(1)
+
 import sys
 
+try:
+    import weather
+except ModuleNotFoundError:
+    print("ERROR: Cannot find 'weather.py'")
+    exit(1)
+
 # for speach synthesis
-import pyttsx3
-engine = pyttsx3.init()
+try:
+    import pyttsx3
+except ModuleNotFoundError:
+    print("ERROR: Your need 'pyttsx3' for this script to work.")
+    print("Use: python3 -m pip install pyttsx3")
+    exit(1)
+
+try:
+    engine = pyttsx3.init()
+except OSError:
+    print("ERROR: Your need 'libespeak' for this script to work.")
+    print("Install libespeak using APT: sudo apt install libespeak1")
+    exit(1)
 
 q = queue.Queue()
 
@@ -79,7 +116,10 @@ try:
     else:
         dump_fn = None
 
-    with sd.RawInputStream(samplerate=args.samplerate, blocksize = 8000, device=args.device, dtype='int16',
+    print("Checking device...")
+    print(sd.check_input_settings(device=args.device, channels=1, dtype='int16', samplerate=args.samplerate))
+    
+    with sd.RawInputStream(samplerate=args.samplerate, blocksize = 16000, device=args.device, dtype='int16',
                             channels=1, callback=callback):
             print('#' * 80)
             print('Press Ctrl+C to stop the recording')
@@ -104,6 +144,15 @@ try:
                         engine.runAndWait()
                         skipDatas = False
                         break
+                    elif tmp == "weather forecast" or tmp == "weather":
+                        skipDatas = True
+                        forecast = weather.get_forecast()
+                        if forecast != "":
+                            engine.say(forecast)
+                        else:
+                            engine.say("Enable to fetch the weather forecast from internet")
+                        engine.runAndWait()
+                        skipDatas = False
                 else:
                     tmp = rec.PartialResult()
                     tmp = tmp[17:]
