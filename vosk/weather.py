@@ -1,18 +1,36 @@
 #!/usr/bin/env python3
 
-#pip3 install requests beautifulsoup4
-
-import requests
-from bs4 import BeautifulSoup
-
-vgm_url = 'https://clearoutside.com/forecast/48.68/8.90'
 try:
-    html_text = requests.get(vgm_url).text
-except ConnectionError:
-    print("Unable resolve clear outside.com")
+    import constants
+except ModuleNotFoundError:
+    print("ERROR: A file named 'constants.py' cannot be found.")
     exit(1)
 
-soup = BeautifulSoup(html_text, 'html.parser')
+try:
+    import requests
+except ModuleNotFoundError:
+    print("ERROR: Your need 'requests' for this script to work.")
+    print("Use: python3 -m pip install requests")
+    exit(1)
+try:
+    from bs4 import BeautifulSoup
+except ModuleNotFoundError:
+    print("ERROR: Your need 'beatifulsoup' for this script to work.")
+    print("Use: python3 -m pip install beautifulsoup4")
+    exit(1)
+
+
+if constants.DEBUG:
+    with open(constants.DEBUG_HTML_FILE) as fp:
+        soup = BeautifulSoup(fp, 'html.parser')
+else:
+    vgm_url = constants.CLEAROUTSIDE_URL
+    try:
+        html_text = requests.get(vgm_url).text
+    except ConnectionError:
+        print("Unable resolve clearoutside.com")
+        exit(1)
+    soup = BeautifulSoup(html_text, 'html.parser')
 
 forecast = soup.find('div', attrs = {'class': 'fc', 'id': 'forecast'})
 
