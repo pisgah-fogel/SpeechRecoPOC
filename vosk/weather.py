@@ -33,6 +33,7 @@ def get_forecast():
 
     """
     if constants.DEBUG:
+        print("Warning: Debug mode: Using local weather information")
         with open(constants.DEBUG_HTML_FILE) as fp:
             soup = BeautifulSoup(fp, 'html.parser')
     else:

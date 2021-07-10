@@ -9,6 +9,7 @@
 import argparse
 import os
 import queue
+import constants
 
 try:
     import sounddevice as sd
@@ -122,9 +123,12 @@ try:
     else:
         dump_fn = None
 
-    print("Checking device...")
+    print("Available devices are:")
+    print(sd.query_devices())
+    print("Default device is: "+str(sd.default.device))
+    print("Checking device %s ..." % str(args.device))
     print(sd.check_input_settings(device=args.device, channels=1, dtype='int16', samplerate=args.samplerate))
-    
+
     with sd.RawInputStream(samplerate=args.samplerate, blocksize = 16000, device=args.device, dtype='int16',
                             channels=1, callback=callback):
             print('#' * 80)
@@ -152,6 +156,11 @@ try:
                         break
                     elif tmp == "weather forecast" or tmp == "weather":
                         skipDatas = True
+                        if constants.DEBUG:
+                            engine.say("Debug mode, reading weather from a local file")
+                        else:
+                            engine.say("Fetching weather from internet, this may take a while")
+                        engine.runAndWait()
                         forecast = weather.get_forecast()
                         if forecast != "":
                             engine.say(forecast)
